@@ -1,8 +1,24 @@
-import uuid
-import os
+try:
+    import uuid
+    import os
+    import zipfile
+except:
+    print("请检查您是否有uuid/os/zipfile库")
+    exit()
+
+def zipdir(path, zipname, compression=zipfile.ZIP_DEFLATED):
+    with zipfile.ZipFile(zipname, mode='w', compression=compression) as ziph:
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                relative_path = os.path.relpath(os.path.join(root, file), path)
+                ziph.write(os.path.join(root, file), arcname=relative_path)
+            for dir in dirs:
+                relative_path = os.path.relpath(os.path.join(root, dir), path)
+                ziph.write(os.path.join(root, dir), arcname=relative_path)
 
 uuid1 = str(uuid.uuid4())
 uuid2 = str(uuid.uuid4())
+
 try:
     os.mkdir('Tutorial_Resource_Pack')
 except:
@@ -83,4 +99,7 @@ os.mkdir('Tutorial_Resource_Pack/models')
 os.mkdir('Tutorial_Resource_Pack/models/entity')
 os.mkdir('Tutorial_Resource_Pack/models/blocks')
 os.mkdir('Tutorial_Resource_Pack/render_controllers')
-print('Done.')
+pack = input('是否直接打包为.mcpack格式(y/n)：')
+if pack == 'y':
+    zipdir('Tutorial_Resource_Pack','Tutorial_Resource_Pack.mcpack')
+print("None.")
